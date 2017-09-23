@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+<h:head>
+	<title>Admin Categories page</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<!-- css files -->
+	<link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+	<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/journal/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" /> 
+	
+	<!-- script files -->
+	<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="#{request.contextPath}/resources/js/footerFix.js"></script>
+
+</h:head>
+
+<f:metadata>
+	<f:viewAction action="#{adminPages.initCategory()}" />
+</f:metadata>
+<body> 
+
+<!-- Header -->
+	<div id="header">
+		<ui:include src="../header.xhtml" />
+	</div>
+	<!-- Header finish -->	
+	
+		<!-- Sidebar -->	
+	<h:form id="sidebar">
+		<ul id="sidebarlist">
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminProducts.xhtml">Products</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminOrders.xhtml">Orders</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminAccounts.xhtml">Accounts</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminCategories.xhtml">Categories</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="../userAccount.xhtml">myAccount</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="../userOrder.xhtml">myOrders</a></li>
+			</ul>
+			<h:commandButton action="#{authenticationBean.logout}" class="btn btn-primary btn-block" value="Logout" />
+		</h:form>
+	<!-- Sidebar finish -->	
+	
+	<!-- Content -->
+	<h:form id="adminContent">	
+	<p:growl id="msgs" showDetail="true"/>
+			
+	<p:dataTable var="category" value="#{adminPages.categories}" editable="true">
+	 	<p:ajax event="rowEdit" listener="#{adminPages.editCategory}" update=":adminContent:msgs" />
+	    <p:ajax event="sort" skipChildren="false" />
+		<p:column headerText="Name" sortBy="#{category}" >
+			<p:cellEditor>
+               	<f:facet name="output"><h:outputText value="#{category}" /></f:facet>
+               	<f:facet name="input"><h:inputText value="#{adminPages.selectedCat}" style="color:black;"/></f:facet> 
+           	</p:cellEditor>
+		</p:column>
+		<p:column headerText="Edit" style="width:5%;">
+           	<p:rowEditor />
+       	</p:column>
+		<p:column  headerText="Delete" style="width:10%">
+			 <h:commandButton action="#{adminPages.deleteCategory(category)}" value="Delete"></h:commandButton>
+		</p:column>
+	</p:dataTable>
+	<h:inputText value="#{adminPages.selectedCat}"></h:inputText>
+	<h:commandButton action="#{adminPages.addCategory(adminPages.selectedCat)}" value="Add Category" />
+	
+	</h:form>
+	<!-- Content finish -->
+
+
+	
+
+</body> 
+</html>

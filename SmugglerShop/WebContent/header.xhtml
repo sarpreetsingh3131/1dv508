@@ -1,0 +1,135 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:p="http://primefaces.org/ui">
+	
+	<header>
+	
+	<nav class="navbar navbar-inverse">
+  		
+  			<!-- Container -->
+  		<div class="container-fluid">
+    		    
+    		<!-- Logo and Dropdown -->
+    		<div class="navbar-header">
+      			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        			<span class="icon-bar"/>
+        			<span class="icon-bar"/>
+        			<span class="icon-bar"/>                        
+      			</button>
+      			<a class="navbar-brand" href="#{request.contextPath}/mainpage.xhtml">Home</a>
+    		</div>
+    		<!-- End Logo and Dropdown -->
+    
+    	
+    	<!-- Header Buttons -->
+    	<div class="collapse navbar-collapse" id="myNavbar">
+      		
+      		<!-- Category, User Login, Orders, Search Bar -->
+      		<ul class="nav navbar-nav">
+      			
+      			<!-- Categories -->
+      			<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Category<span class="caret"></span></a>
+						<ul class="dropdown-menu" id="category">
+							<ui:repeat var="category" value="#{mainpage.categories}">
+								<li><a href="#{request.contextPath}/mainpage.xhtml?category=#{category}">#{category}</a></li>
+							</ui:repeat>
+						</ul>
+				</li>
+        		<!-- End Categories -->	
+        		
+        		
+        		<li><a href="searchOrder.xhtml">Orders</a></li>
+        		
+        		
+					<!-- Search Bar -->
+					<li><h:form class="navbar-form navbar-right" role="search" action="mainpage.xhtml?search=#{mainpage.search}">
+        				<div class="form-group input-group">
+          					<p:autoComplete id="acSimple" value="#{mainpage.search}" completeMethod="#{mainpage.instantSearch}" a:placeholder="Search Product by Name"></p:autoComplete>
+          						<span class="input-group-btn">
+            						<h:commandButton class="btn btn-success" value="Go!" action="#{mainpage.toMainpage}"/>
+          						</span>      
+          				</div>
+      				</h:form></li>
+      				<!-- End Search Bar -->
+      			
+      			</ul>
+      		<!-- End Categories, Orders, Search Bar -->
+      		
+      		
+      		<!-- Cart, Admin -->
+      		<h:form id="theHead">
+      		<ul class="nav navbar-nav navbar-right">
+      			<li><a href="basket.xhtml"><span class="badge">#{basket.size()}</span><span class="glyphicon glyphicon-shopping-cart"/> Cart</a></li>
+        		
+        <!--Login -->
+        	<li class="dropdown">
+        		<h:form rendered="#{not authenticationBean.loggedIn}">
+        		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> 
+        		<h:outputText value="Login"/></a>
+					<ul id="login-dp" class="dropdown-menu">
+						<li><div class="row">
+								<div class="col-xs-12">
+										<h:form class="form" role="form" method="post" action="login" accept-charset="UTF-8" id="login-nav">
+											<div class="form-group">
+												<h:inputText value="#{authenticationBean.activeUser.name}" type="email" class="form-control" id="exampleInputEmail2"
+														a:placeholder="Username" required=" " />
+											</div>
+											<div class="form-group">
+												<h:inputSecret value="#{authenticationBean.activeUser.password}"
+														type="password" class="form-control"
+														id="exampleInputPassword2" a:placeholder="Password"
+														required=" " />
+												</div>
+												<div class="form-group">
+													<h:commandButton action="#{authenticationBean.login}" value="Sign In"
+														class="btn btn-primary btn-block" />
+												</div>
+												<a href="userRegister.xhtml" style="color: black"> Need an account?</a>
+										</h:form>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</h:form>
+				
+					<h:form  rendered="#{authenticationBean.loggedIn}">
+					
+					<h:form rendered="#{authenticationBean.activeUser.admin}">
+					<a href="#{request.contextPath}/restricted/adminProducts.xhtml">
+					<span class="glyphicon glyphicon-user"></span>
+					<h:outputText value="#{authenticationBean.activeUser.name}" /></a>
+					</h:form>
+					
+					<h:form rendered="#{! authenticationBean.activeUser.admin}">
+					<a href="userAccount.xhtml">
+					<span class="glyphicon glyphicon-user"></span>
+					<h:outputText value="#{authenticationBean.activeUser.name}" /></a>
+					</h:form>
+					
+					</h:form>
+					
+					
+					</li>
+					<!-- End Login -->
+					
+        		</ul>
+        	</h:form>
+
+      		<!-- End Cart, Login -->
+    	
+    	</div>
+  		<!-- End Header Buttons -->
+  		
+  		</div>
+  		<!-- End Container -->
+	
+	</nav>
+	
+	
+	</header>
+</ui:composition>

@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      	xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+      
+
+<h:head>
+	<title>#{productView.getOneProduct(productView.ID).name}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<!-- css files -->
+	<link rel="stylesheet" href="resources/css/style.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+	<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/journal/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" /> 
+	
+	<!-- script files -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="resources/js/footerFix.js"></script>
+	
+</h:head>
+<f:metadata>
+	<f:viewParam name="id" value="#{productView.ID}"></f:viewParam>
+	<f:viewAction action="#{productView.init}"/>
+</f:metadata>
+<body>
+	
+	<!-- Header -->
+	<div id="header">
+		<ui:include src="/header.xhtml" />
+	</div>
+	<!-- Header finish -->	
+	
+	<!-- Content -->
+	<h:form>
+		<p:growl id="growl" showDetail="true" sticky="true" /> 
+		
+		<div class="container"  style="margin-bottom: 50px">
+  			<ul style="list-style: none">
+				<ui:repeat style="list-style: none" var="product" value="#{productView.getOneProduct(productView.ID)}">
+  					<li><div class="row" style="margin-top: 200px">
+						<div class="col-sm-4">
+      						<img src="#{product.image}" alt="#{product.name}" class="col-sm-12 img-thumbnail" id="imageBox"></img>
+    							</div>
+    					  
+    					  <div class="col-sm-1"></div>
+    					  <div class="col-sm-6" id="productDetails">
+      						<h2 style="margin-top: -7px">#{product.name}</h2>     
+      							<p>#{product.description}</p>
+      							<hr/>
+    								<p style="font-size: 20px" class="text-center">Price: <span>#{product.price} <i class="fa fa-gg-circle"></i></span></p>
+    							<hr/>	
+    					
+    							<!-- When product not in basket -->
+							<span style="margin: 0 0 0 350px">
+								<h:selectOneMenu id="Quantity" value="#{product.quantity}" class="btn btn-default" rendered="#{product.quantity lt 6 and not basket.productInBasket(product.id) and basket.getQuantity(product.id) gt 0}" >
+									<p:ajax event="click" execute="Quantity" update="@form" ></p:ajax>
+									<f:selectItem itemLabel="1" itemValue="1" />
+									<f:selectItem itemLabel="2" itemValue="2" itemDisabled="#{productView.getQuantity(product.id) lt 2}" />
+									<f:selectItem itemLabel="3" itemValue="3" itemDisabled="#{productView.getQuantity(product.id) lt 3}" />
+									<f:selectItem itemLabel="4" itemValue="4" itemDisabled="#{productView.getQuantity(product.id) lt 4}" />
+									<f:selectItem itemLabel="5" itemValue="5" itemDisabled="#{productView.getQuantity(product.id) lt 5}" />
+									<f:selectItem itemLabel="5+" itemValue="6" itemDisabled="#{productView.getQuantity(product.id) lt 6}" />
+								</h:selectOneMenu>
+										
+								
+								
+								<!-- Value input for greater than 5 -->
+								<h:inputText value="#{product.quantity}" rendered="#{product.quantity gt 5 and not basket.productInBasket(product.id)}" type="number" max="6" size="1" class="quantityBackground">
+								    <p:ajax event="change" update="@form" listener="#{productView.notifyQuantity()}" />
+								</h:inputText>
+								<h:inputText value="#{basket.productFromBasket(product.id).quantity}"  rendered="#{basket.productFromBasket(product.id).quantity gt 5 and basket.productInBasket(product.id)}" type="number" max="6" size="1" class="quantityBackground">
+								    <p:ajax event="change" update="@form" listener="#{productView.notifyQuantity()}" />
+								</h:inputText>
+								
+								<h:selectOneMenu id="QuantityBasketItem" value="#{basket.productFromBasket(product.id).quantity}" class="btn btn-default" rendered="#{basket.productFromBasket(product.id).quantity lt 6 and basket.productInBasket(product.id)}" >
+									<f:ajax event="click" execute="QuantityBasketItem" render="@form" ></f:ajax>
+									<f:selectItem itemLabel="1" itemValue="1" />
+									<f:selectItem itemLabel="2" itemValue="2" itemDisabled="#{productView.getQuantity(product.id) lt 2}" />
+									<f:selectItem itemLabel="3" itemValue="3" itemDisabled="#{productView.getQuantity(product.id) lt 3}" />
+									<f:selectItem itemLabel="4" itemValue="4" itemDisabled="#{productView.getQuantity(product.id) lt 4}" />
+									<f:selectItem itemLabel="5" itemValue="5" itemDisabled="#{productView.getQuantity(product.id) lt 5}" />
+									<f:selectItem itemLabel="5+" itemValue="6" itemDisabled="#{productView.getQuantity(product.id) lt 6}" />
+								</h:selectOneMenu>
+							<h:outputText  value="#{productView.getQuantity(product.id)} stock/s left." />	
+							</span>	
+								<!-- Quantity End -->
+					
+								<br/><br/>
+						
+								<!-- Add basket button -->
+								
+								<h:commandButton  value="Add to Basket" class="btn btn-primary" href="#" disabled="#{basket.productInBasket(product.id) or basket.getQuantity(product.id) lt 1}">
+									<f:ajax event="click" execute="Quantity" listener="#{basket.add(product)}" render="theHead @form"></f:ajax>
+								</h:commandButton>
+						
+								<h:commandButton value="Remove from Basket" class="btn btn-primary" href="#" rendered="#{basket.productInBasket(product.id)}">
+									<f:ajax event="click" execute="Quantity" listener="#{basket.remove(product.id)}" render="theHead @form"></f:ajax>
+								</h:commandButton>
+								
+								<h:outputText style="color:black" value="Product is already in the basket" rendered="#{basket.productInBasket(product.id)}" />
+								<!-- End Add basket button -->	
+							</div> 
+ 					</div></li>		
+    		
+    		<br/><hr />
+    		
+    		<h:form rendered="#{authenticationBean.loggedIn}">
+    			<div class="col-sm-6" id="ratingBox">
+ 						<p:rating value="#{productView.nRating.stars}" rendered="#{authenticationBean.loggedIn}" />
+ 							<p class="text-left">Rate the Product!</p>
+						<h:inputTextarea value="#{productView.nRating.comment}" rendered="#{authenticationBean.loggedIn}" rows="5" cols="50" a:placeholder="Write your comment (max 400 words)"/>
+  				 		<br/>
+  				 		<h:commandButton style="margin: 0 0 0 130px" action="#{productView.submitRating()}" value=" Comment" rendered="#{authenticationBean.loggedIn}" />
+   				</div>	
+   			</h:form>		
+   
+   			<h:form rendered="#{not authenticationBean.loggedIn}"> 
+   				<div class="col-sm-6">
+   					<h5 ><h:outputText value="To write a comment you need to be logged in as a user. " rendered="#{not authenticationBean.loggedIn}" />
+    					<h:link  value="Not registered yet?" outcome="userRegister" rendered="#{not authenticationBean.loggedIn}" /></h5>
+    			</div>
+   			</h:form>
+   			
+   		<p class="text-center"><h:outputText  value="What our customer says about this product"  /></p>
+   			<div class="col-sm-6" id="commentSection">
+   					<br/>
+   					<ul style="list-style: none">
+						<ui:repeat style="list-style: none" var="rating" value="#{product.ratings}">
+							<li><p:panelGrid columns="2">
+    							<f:facet name="header">
+       								<p:graphicImage value="#{rating.author.image}" style="height:80px"></p:graphicImage>
+    							</f:facet>
+ 
+    							<h:outputText value="Name" />
+    							<h:outputText value="#{rating.author.name}" />
+ 
+    							<h:outputText value="Comment" />
+    							<h:outputText value="#{rating.comment}" />
+ 
+    							<h:outputText value="Rating" />
+    							<p:rating value="#{rating.stars}" readonly="true"></p:rating>
+ 							</p:panelGrid>
+							<br/>
+							</li>
+						</ui:repeat>
+					</ul>
+			</div>
+		</ui:repeat>
+    </ul>
+ </div>
+</h:form>
+	
+			<!-- Footer -->
+			<div id="footerPart">
+				<ui:include src="/footer.xhtml" />
+			</div>
+			<!-- Footer finish -->
+	
+</body>
+</html>

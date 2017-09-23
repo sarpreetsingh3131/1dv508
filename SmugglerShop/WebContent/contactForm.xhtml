@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+	<title>ContactForm</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<!-- css files -->
+	<link rel="stylesheet" href="resources/css/style.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+	<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/journal/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" /> 
+	
+	<!-- script files -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="resources/js/footerFix.js"></script>
+	
+	<script>
+	function lettersOnly(input){
+			var regex = /[^a-z ]/gi;
+			input.value = input.value.replace(regex, "");
+		}
+	</script>
+	
+	<script>
+	function digitsOnly(input){
+			var regex = /[^0-9]/g;
+			input.value = input.value.replace(regex, "");
+		}
+	</script>
+	
+	<script>
+	function emailOnly(input){
+			var regex = /[^a-z@_.0-9]/gi;
+			input.value = input.value.replace(regex, "");
+			if
+		}
+	</script>
+	
+	<script>
+	function addressOnly(input){
+			var regex = /[^a-z0-9. ]/gi;
+			input.value = input.value.replace(regex, "");
+		}
+	</script>
+
+<script>function ValidateEmail(inputText)  
+{  
+	var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;  
+	if(inputText.value.match(mailformat))  
+	{  
+	
+	return true;  
+	}  
+	else  
+	{  
+	alert("You have entered an invalid email address!");  
+
+	return false;  
+	}  
+	}  </script>
+	
+<f:metadata>
+	<f:viewAction action="#{contactPage.init()}" />
+</f:metadata>
+
+</h:head>
+<body>
+	<!-- Header -->
+	<div id="header">
+		<ui:include src="/header.xhtml" />
+	</div>
+	<!-- Header finish -->
+
+	<!-- Content -->
+	<h:form id="content">
+		<p:growl id="growl" showDetail="true" sticky="true" /> 
+		<p:dialog header="Basic Dialog" widgetVar="dlg1" minHeight="40">
+    		<h:outputText value="Resistance to PrimeFaces is futile!" />
+		</p:dialog>
+		<div class="container-fluid">
+			<div class="col-xs-4" id="basketforms">
+				
+				<div class="form-group">
+					<p:outputLabel for="name">Name</p:outputLabel>
+					<h:inputText rendered="#{not authenticationBean.loggedIn}" value="#{contactPage.user.name}" class="form-control" id="name" a:placeholder="John Smith" required="true" maxlength="30" onkeyup="lettersOnly(this)"/>
+					<h:outputText rendered="#{authenticationBean.loggedIn}" value="#{authenticationBean.activeUser.name}" class="form-control" />
+				</div>
+
+				<div class="form-group">
+					<p:outputLabel for="email">Email</p:outputLabel>
+					<p:inputText rendered="#{not authenticationBean.loggedIn}" value="#{contactPage.user.email}" type="email" class="form-control" id="email" a:placeholder="example@gmail.com" required="true" onkeyup="emailOnly(this)"/> <!-- onmouseout="ValidateEmail(this)" -->
+					<h:outputText rendered="#{authenticationBean.loggedIn}" value="#{authenticationBean.activeUser.email}" class="form-control" />
+				</div>
+			
+				<div class="form-group">
+					<p:outputLabel for="phone">Phone</p:outputLabel>
+					<h:inputText rendered="#{not authenticationBean.loggedIn}" id="phone" value="#{contactPage.phone}" class="form-control" a:placeholder="0735781231"  maxlength="10" onkeyup="digitsOnly(this)"/>	
+					<h:outputText rendered="#{authenticationBean.loggedIn}" value="#{authenticationBean.activeUser.phone}" class="form-control" />
+				</div>
+
+				<div class="form-group">
+					<p:outputLabel for="address1">Address</p:outputLabel>
+					<h:inputText rendered="#{not authenticationBean.loggedIn}" value="#{contactPage.address}" type="text" class="form-control" id="address1" a:placeholder="Stallvagen 30"   maxlength="30"  onkeyup="addressOnly(this)"/>
+					<h:outputText rendered="#{authenticationBean.loggedIn}" value="#{authenticationBean.activeUser.address}" class="form-control" />
+				</div>
+
+				
+				<div class="col-xs-4">
+					<div class="form-group">
+					<p:outputLabel for="postcode">PostCode</p:outputLabel>
+						<h:inputText rendered="#{not authenticationBean.loggedIn}" value="#{contactPage.postcode}" class="form-control" id="postcode" a:placeholder="35421"  maxlength="5" onkeyup="digitsOnly(this)"/>
+						<h:outputText rendered="#{authenticationBean.loggedIn}" value="#{authenticationBean.activeUser.postcode}" class="form-control" />
+					</div>
+				</div>
+
+				<div class="col-xs-4"></div>
+				
+				<div class="col-xs-4">
+					<div class="form-group">
+						<p:outputLabel for="city">City</p:outputLabel>
+						<h:inputText rendered="#{not authenticationBean.loggedIn}" value="#{contactPage.city}" class="form-control" id="city" a:placeholder="Vaxjo"   maxlength="10" onkeyup="lettersOnly(this)"/>
+						<h:outputText rendered="#{authenticationBean.loggedIn}" value="#{authenticationBean.activeUser.city}" class="form-control" />
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<p:outputLabel for="message">Message</p:outputLabel>
+					<p:inputTextarea value="#{contactPage.message}" rows="5" cols="55" id="message" a:placeholder="Your message...."  required="false" />
+				</div>
+				
+				<div class="col-xs-5"></div>
+					<h:commandButton action="#{contactPage.submitOrder}" value="Submit" class="btn btn-primary active" onclick="PF('dlg1').show();"/>
+					<br/>
+					<h:outputText value="* required fields" />
+			</div>
+			<div class="col-xs-2"></div>
+
+			<div class="col-xs-4">
+				<h3 id="bagTitle">Your Cart</h3>
+				<div id="basket">
+					<pre><ul class="list-group"><ui:repeat var="basketItem" value="#{basket.basket}"> <li class="list-group-item"><h5><img src="#{basketItem.image}"
+											alt="resources/img/HeaderLogo.png" width="150" height="120"
+											class="img-thumbnail" />     Qtn: #{basketItem.quantity}                   <span>#{basketItem.price}<i class="fa fa-gg-circle"></i></span><br />#{basketItem.name}</h5></li>
+							</ui:repeat></ul></pre>
+							</div><pre><h4 id="total">Total: <h:outputText value="#{basket.totalPrice}" /> <i class="fa fa-gg-circle"></i></h4></pre>
+			</div>
+		</div>
+	</h:form>
+	<!-- Content finish -->
+
+	<!-- Footer -->
+	<div id="footerPart">
+		<ui:include src="/footer.xhtml" />
+	</div>
+	<!-- Footer finish -->
+
+</body>
+</html>

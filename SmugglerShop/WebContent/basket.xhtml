@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Basket page</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<!-- css files -->
+	<link rel="stylesheet" href="resources/css/style.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+	<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/journal/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" /> 
+	
+	<!-- script files -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="resources/js/footerFix.js"></script>
+	<script> function reload() {
+		loaction.reload();
+		}
+	</script>
+
+		
+</h:head>
+<body>
+	<!-- Header -->
+	<div id="header">
+	<ui:include src="/header.xhtml" />
+	</div>	
+		<!-- Content -->
+		<h:form id="container">
+			<p:growl id="growl" showDetail="true" sticky="true" />  
+			<h3><h:outputText value="Sorry, Your Basket is Empty" rendered="#{empty basket.basket}" /></h3>
+			<hr size="5" width="100%"></hr>
+			
+						
+			<!-- Basket Items -->
+			<div class="container-fluid">
+			<ul style="list-style:none"  id="basketItems">
+				<ui:repeat style="list-style:none" var="basketItem" value="#{basket.basket}">
+					<li>
+					
+					<a href="productView.xhtml?id=#{basketItem.id}"> 
+					<div class="col-xs-3">
+					<img class="img-thumbnail" src="#{basketItem.image}" alt="ProductImage" />
+					<h3 id="productname">#{basketItem.name}</h3>
+					</div></a>
+					
+				
+				<div class="col-xs-1"></div>
+				
+				<div class="col-xs-2" id="price"><h5>#{basketItem.price} <i class="fa fa-gg-circle"></i></h5></div>
+						
+				<div class="col-xs-1"></div>
+				
+					<!-- Quantity selection -->
+						<div class="col-xs-2">
+								<h:selectOneMenu id="Quantity" value="#{basketItem.quantity}" class="btn btn-default" rendered="#{basketItem.quantity lt 6}" >
+									<f:ajax event="click" execute="Quantity" render="@form"></f:ajax>
+									<f:selectItem itemLabel="1" itemValue="1" />
+									<f:selectItem itemLabel="2" itemValue="2" itemDisabled="#{productView.getQuantity(basketItem.id) lt 2}" />
+									<f:selectItem itemLabel="3" itemValue="3" itemDisabled="#{productView.getQuantity(basketItem.id) lt 3}" />
+									<f:selectItem itemLabel="4" itemValue="4" itemDisabled="#{productView.getQuantity(basketItem.id) lt 4}" />
+									<f:selectItem itemLabel="5" itemValue="5" itemDisabled="#{productView.getQuantity(basketItem.id) lt 5}" />
+									<f:selectItem itemLabel="5+" itemValue="6" itemDisabled="#{productView.getQuantity(basketItem.id) lt 6}">
+										
+									</f:selectItem>
+								</h:selectOneMenu>
+				
+							<!-- Value input for greater than 5 -->
+								<h:inputText value="#{basketItem.quantity}" rendered="#{basketItem.quantity gt 5}" type="number" max="6" size="2" class="quantityBackground">
+								    <p:ajax event="change" update="@form" listener="#{basket.notifyQuantity(basketItem.id)}" />
+								</h:inputText>
+							<!-- End Input -->	
+						
+						<h:outputText value="#{productView.getQuantity(basketItem.id)} stock left." />
+						</div>		
+										
+						<!-- Quantity End -->
+					
+					<div class="col-xs-1"></div>
+					
+					<div class="col-xs-2">	
+					<h:commandButton action="#{basket.remove()}" value="Remove" class="btn btn-primary" href="#">
+							<f:param name="pID" value="#{basketItem.id}"></f:param>
+						</h:commandButton>
+					</div>
+				</li>
+					<hr size="5" width="85%"></hr>
+				</ui:repeat>
+			</ul>
+			</div>
+			<!-- End Basket Items -->
+			
+			
+			<div class="container-fluid">
+			<div id="checkoutinformation">
+				
+				<div class="col-xs-8">
+				<h2 id="totalprice" ><h:outputText id="totalprice" value="Total: #{basket.totalPrice}" /> <i class="fa fa-gg-circle"></i></h2>
+				</div>
+				
+				<div class="col-xs-1"></div>	
+				
+				<div class="col-xs-3" id="basketbutton">
+				<!-- <p:tooltip id="toolTipFade" for="checkout" value="Unable to proceed to checkout without items in the basket"></p:tooltip> -->
+				<h:commandButton action="contactForm?faces-redirect=true" value="Checkout" class="btn btn-success" disabled="#{empty basket.basket}" id="checkout"/>
+				<a id="btnshopagain" class="btn btn-primary" href="mainpage.xhtml">Continue Shopping</a>
+				</div>
+			</div>
+			</div>
+		</h:form>
+	<!-- End Content -->
+	
+	<!-- Footer -->
+	<div id="footerPart">
+		<ui:include src="/footer.xhtml" />
+	</div>
+	<!-- Footer finish -->
+
+</body>
+</html>

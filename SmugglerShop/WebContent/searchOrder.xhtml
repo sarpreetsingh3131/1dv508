@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+<h:head>
+<title>searchOrder page</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<!-- css files -->
+	<link rel="stylesheet" href="resources/css/style.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+	<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/journal/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" /> 
+	
+	<!-- script files -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="resources/js/footerFix.js"></script>
+	
+</h:head>
+<body>
+	
+	<!-- Header -->
+	<div id="header">
+	<ui:include src="/header.xhtml" />
+	</div>
+	<!-- Header finish -->	
+	
+	<!-- Content -->
+	<h:form id="content">
+		<p:growl id="growl" showDetail="true" sticky="true" /> 
+	
+	<div class="container-fluid">
+		<div class="col-xs-3"></div>
+			<div class="col-xs-6">
+				
+				<!-- Search Bar -->
+				<div class="form-inline" id="searchorder">
+					<h:inputText id="inputOrderNr" a:placeholder="Order Number"
+							type="text" class="form-control" value="#{contactPage.searchOrder}" size="30"/>
+						<h:commandButton class="btn btn-primary" action="#{contactPage.searchOrder()}"
+							href="#" value="Go!" />
+				</div>
+				<!-- Finish Search Bar -->
+				
+				<hr style="border:solid #766A5E"></hr>
+				
+				<h4 id="noOrder"><h:outputText value="No Orders found." rendered="#{empty contactPage.searchedOrder}" /></h4>	
+				
+				
+		<!-- Order Details -->		
+		<p:panel id="basic" header="Order Information" style="margin-bottom:10px" rendered="#{not empty contactPage.searchedOrder}">
+       		<table class="table table-hover">
+     				 	<thead>
+        					<tr>
+          						<th>#Order</th>
+          						<th>Order Date</th>
+         						<th>Status</th>   
+     						</tr>
+      					</thead>
+      
+      				<tbody>
+        					<td><h:outputText value="#{contactPage.searchedOrder.orderId}" rendered="#{not empty contactPage.searchedOrder}" /></td>
+         					<td><h:outputText value="#{contactPage.searchedOrder.orderDate}" rendered="#{not empty contactPage.searchedOrder}" /></td>
+          					<td><h:outputText value="#{contactPage.searchedOrder.orderStatus} " rendered="#{not empty contactPage.searchedOrder}" /></td>
+ 
+      				</tbody>
+    			</table>
+    			<h:outputLabel value="Items" />
+    			<pre><ul class="list-group"><ui:repeat value="#{contactPage.searchedOrder.orderList}"  var="product">  <li class="list-group-item"><h7><img src="#{product.image}"
+												alt="resources/img/HeaderLogo.png" width="200" height="100" class="img-thumbnail" />          <span>Qtn: #{product.quantity}              #{product.price} <i class="fa fa-gg-circle"></i></span><br />#{product.name}</h7></li>
+											</ui:repeat></ul></pre>
+    	</p:panel>
+    	<!-- Finish Order Details -->	
+       
+   		</div>
+	</div>
+	
+	</h:form>
+	
+	<!-- End content -->
+
+		<!-- Footer -->
+		<div id="footerPart">
+	<ui:include src="/footer.xhtml" />
+	</div>
+	<!-- Footer finish -->
+	
+</body>
+</html>

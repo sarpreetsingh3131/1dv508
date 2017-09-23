@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+<h:head>
+	<title>Admin order page</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<!-- css files -->
+	<link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+	<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/journal/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" /> 
+	
+	<!-- script files -->
+	<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="#{request.contextPath}/resources/js/footerFix.js"></script>
+
+</h:head>
+	
+	<f:metadata>
+		<f:viewAction action="#{adminPages.init}" />
+	</f:metadata>
+
+<h:body>
+	
+	<!-- Header -->
+	<div id="header">
+		<ui:include src="../header.xhtml" />
+	</div>
+	<!-- Header finish -->	
+	
+		<!-- Sidebar -->	
+	<h:form id="sidebar">
+		<ul id="sidebarlist">
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminProducts.xhtml">Products</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminOrders.xhtml">Orders</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminAccounts.xhtml">Accounts</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminCategories.xhtml">Categories</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="../userAccount.xhtml">myAccount</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="../userOrder.xhtml">myOrders</a></li>
+			</ul>
+			<h:commandButton action="#{authenticationBean.logout}" class="btn btn-primary btn-block" value="Logout" />
+		</h:form>
+	<!-- Sidebar finish -->	
+	
+	<!-- Content -->
+	<h:form id="adminContent">	
+	
+	<p:growl id="msgs" showDetail="true"/>
+	
+	<p:panel id="toggleable" header="New Order" toggleable="true" toggleSpeed="500" collapsed="true" closeSpeed="500" widgetVar="panel" style="margin-bottom:20px">
+  
+         <!-- Add New Order -->
+			<div class="container-fluid" id="orderEdit">
+				<div class="col-xs-3">
+				 		<p:outputLabel  value="Order Date" /><br /><p:calendar id="popup" value="#{adminPages.newOrder.orderDate}" /><hr />
+						<p:outputLabel  value="Status" /><br /><h:selectOneMenu value="#{adminPages.newOrder.orderStatus}">
+      						<f:selectItems value="#{adminPages.status}" var="status" itemLabel="#{status}" itemValue="#{status}" />
+                   			</h:selectOneMenu><hr />
+                   		<h:commandButton action="#{adminPages.addNewOrder}" value="Add"/>	
+					</div>
+				
+				<div class="col-xs-2"></div>
+				
+				<div class="col-xs-7" id="orderEditProducts">
+						<p:outputLabel  value="Products" />
+						<p:selectManyMenu id="advanced" value="#{adminPages.newOrder.orderList}" converter="productConverter" var="t" filter="true" filterMatchMode="contains" showCheckbox="true" style="width:100%">
+            				<f:selectItems value="#{adminPages.products}" var="product" itemLabel="#{product.name}" itemValue="#{product}" />
+ 								<p:column>
+       			 					<h:graphicImage value="#{t.image}" width="100" height="100" class="img-thumbnail" />
+       			 				</p:column>
+ 								
+ 								<p:column>
+       			 					<h:outputText value="#{t.name}" />
+       			 				</p:column>
+       			 	
+       			 				<p:column>
+       			 					<p:inputText id="inputQuantity" value="#{adminPages.quantities[t.id]}" a:size="2">
+       			 						<f:ajax event="change" listener="#{adminPages.test(t.id)}" execute="inputQuantity"></f:ajax>
+       			 					</p:inputText>
+       			 				</p:column>
+       			 		</p:selectManyMenu>
+       			</div>		
+		 </div>
+		<!-- End Add New Order -->
+		</p:panel>
+		
+		 
+		 
+		 <!-- SearchBar -->
+		<div class="container-fluid" id="adminsearchBar">
+
+			<div class="col-xs-6">
+				<div class="form-inline">
+					<h:inputText value="#{adminPages.searchOrder}" id="inputSearch" a:placeholder="Search Order by ID"
+							type="text" class="form-control" size="30"></h:inputText>
+				<h:commandButton action="#{adminPages.searchOrder()}" class="btn btn-success" value="Go!" />
+
+				</div>
+				
+			</div>
+
+				<div class="col-xs-2">
+					<h:commandButton action="#{adminPages.init()}" value="Show all orders" />
+				</div>
+				
+				<div class="col-xs-2"></div>	
+		
+		<div class="col-sm-1">
+			<h:selectOneMenu value="#{adminPages.state}">
+			<f:ajax event="click" listener="#{adminPages.changeCheckedStates()}" render="@form"></f:ajax>
+        	<f:selectItems value="#{adminPages.status}" var="status" itemLabel="#{status}" itemValue="#{status}" />
+    		</h:selectOneMenu>
+    		<h:commandButton action="#{adminPages.deleteCheckedOrders()}" value="Delete Selected" />
+		
+		</div>
+		</div>
+	<!-- End SearchBar -->
+	
+
+	<!-- Order Table -->
+ 	 	<div class="container-fluid" id="adminOrderTable">
+ 				<div class="col-xs-11"  id="tablestructure">
+  						<p:dataTable id="orders" var="order" value="#{adminPages.orders}" editable="true">
+       			
+ 						<p:ajax event="rowEdit" listener="#{adminPages.onRowEdit}" update=":adminContent:msgs" />
+       					<p:ajax event="rowEditCancel" listener="#{adminPages.onRowCancel}" update=":adminContent:msgs" />
+       					<p:ajax event="sort" skipChildren="false" />
+ 							
+ 									
+ 							<p:column headerText="Id" style="width:10%" sortBy="#{order.orderId}">
+           						<p:cellEditor>
+               						<f:facet name="output"><h:outputText value="#{order.orderId}" /></f:facet>
+               						<f:facet name="input"><h:outputText id="modelInput" value="#{order.orderId}" /></f:facet> 
+           						</p:cellEditor>
+       						</p:column>
+       						
+       						<p:column headerText="Order Date" style="width:11%" sortBy="#{order.orderDate}">
+           						<p:cellEditor>
+               						<f:facet name="output"><h:outputText value="#{order.orderDate}" /></f:facet>
+               						<f:facet name="input"><p:calendar id="popup" value="#{order.orderDate}" label="Order Date" /></f:facet>
+           						</p:cellEditor>
+       						</p:column>
+ 
+       						<p:column headerText="Products">
+           						<p:cellEditor>
+           						<f:facet name="output">
+           								<div id="adminOrderProduct">
+											<pre><ul class="list-group"><ui:repeat value="#{order.orderList}" var="product">  <li class="list-group-item"><h7><img src="#{product.image}"
+												alt="resources/img/HeaderLogo.png" width="100" height="50" class="img-thumbnail" />          <span>Qtn: #{product.quantity}                   #{product.price} <i class="fa fa-gg-circle"></i></span></h7><br /><h9>#{product.name}</h9></li>
+											</ui:repeat></ul><h4 id="total">Total: <h:outputText value="#{order.totalPrice}" /> <i class="fa fa-gg-circle"></i></h4></pre>
+										</div>
+									</f:facet>
+               						
+               						<f:facet name="input"> 
+               							<p:inplace id="basic" label="Change Products">
+               								<p:selectManyMenu id="advanced" value="#{order.orderList}" converter="productConverter" var="t" filter="true" filterMatchMode="contains" showCheckbox="true" style="width:100%">
+            									<f:selectItems value="#{adminPages.products}" var="product" itemLabel="#{product.name}" itemValue="#{product}" />
+       			 									<p:column>
+       			 										<h:graphicImage value="#{t.image}" width="100" height="50" class="img-thumbnail" />
+       			 									</p:column>
+  
+       			 									<p:column>
+       			 										<h:outputText value="#{t.name}" />
+       			 									</p:column>
+       			 								
+       			 									<p:column>
+       			 										<h:outputText id="inputQuantity" value="#{t.quantity}" a:size="2" />
+       			 									</p:column>
+       									</p:selectManyMenu>
+       								</p:inplace>
+               					</f:facet>
+           					</p:cellEditor>
+       					</p:column>
+ 
+       						<p:column headerText="Status" style="width:11%" sortBy="#{order.orderStatus}">
+           						<p:cellEditor>
+               						<f:facet name="output">
+               							<p:inplace label="#{order.orderStatus}">
+											<h:selectOneMenu id="changeStatusMenu" value="#{order.orderStatus}">
+												<f:ajax event="change" listener="#{adminPages.updateDB(order)}" execute="changeStatusMenu" render="@form"></f:ajax>
+                       							<f:selectItems value="#{adminPages.status}" var="status" itemLabel="#{status}" itemValue="#{status}" />
+                   							</h:selectOneMenu>
+               							</p:inplace>
+               						</f:facet>
+               						<f:facet name="input">
+                   						<h:selectOneMenu value="#{order.orderStatus}" style="color:black;">
+                       						<f:selectItems value="#{adminPages.status}" var="status" itemLabel="#{status}" itemValue="#{status}" />
+                   						</h:selectOneMenu>
+               						</f:facet>
+           						</p:cellEditor>
+       						</p:column>
+       						
+       						<p:column headerText="Total Price" style="width:5%" sortBy="#{order.totalPrice}">
+       							<p:cellEditor>
+       								<f:facet name="output"><h:outputText value="#{order.totalPrice}" /></f:facet>
+               						<f:facet name="input"><h:outputText value="#{order.totalPrice}" /></f:facet>
+               					</p:cellEditor>
+       						</p:column>
+ 
+       						<p:column headerText="Edit" style="width:5%;background-color:#EEEDEB;">
+           						<p:rowEditor />
+       						</p:column>
+
+       						
+       						<p:column headerText="Remove" style="width:8%;background-color:#EEEDEB;">
+           						<h:commandButton class="btn btn-primary" value="Remove">
+           							<f:ajax event="click" listener="#{adminPages.deleteOrder(order)}" render="orders"></f:ajax>
+           						</h:commandButton>
+       						</p:column>
+       						
+       						<p:column headerText="Mark" style="width:4%;background-color:#EEEDEB;">
+       							<h:selectBooleanCheckbox id="checkbox" value="#{adminPages.checked[order.orderId]}">
+       								<f:ajax event="change" execute="checkbox"></f:ajax>
+       							</h:selectBooleanCheckbox>
+       						</p:column>
+  
+   				</p:dataTable>
+			</div>
+		</div>
+		<!-- Order Table -->
+		
+	</h:form>
+	<!-- Content finish -->
+
+
+	
+</h:body>
+</html>

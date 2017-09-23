@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+<h:head>
+	<title>User Account</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<!-- css files -->
+	<link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+	<link
+		href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/journal/bootstrap.min.css"
+		rel="stylesheet" />
+	<link rel="stylesheet"
+		href="https://formden.com/static/cdn/bootstrap-iso.css" />
+	
+
+	<!-- script files -->
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="#{request.contextPath}/resources/js/footerFix.js"></script>
+	<script>
+  var loadFile = function(event) {
+    var reader = new FileReader();
+    reader.onload = function(){
+      var output = document.getElementById('output');
+      output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
+</script>
+
+
+
+</h:head>
+
+<f:metadata>
+</f:metadata>
+
+<h:body>
+
+	<!-- Header -->
+	<div id="header">
+		<ui:include src="/header.xhtml" />
+	</div>
+	<!-- Header finish -->
+
+	<!-- Sidebar -->
+	<h:form id="sidebar">
+		<h:form rendered="#{not authenticationBean.activeUser.admin}">
+		<ul id="sidebarlist">
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="userAccount.xhtml">My Account</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="userOrder.xhtml">My Orders</a></li>
+			<li><h:commandButton action="#{authenticationBean.logout}" class="btn btn-primary btn-block" value="Logout"/></li>
+			</ul>
+		</h:form>
+		<h:form rendered="#{authenticationBean.activeUser.admin}">
+		<ul id="sidebarlist">
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="#{request.contextPath}/restricted/adminProducts.xhtml">Products</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="#{request.contextPath}/restricted/adminOrders.xhtml">Orders</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="#{request.contextPath}/restricted/adminAccounts.xhtml">Accounts</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="#{request.contextPath}/restricted/adminCategories.xhtml">Categories</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="#{request.contextPath}/userAccount.xhtml">myAccount</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="#{request.contextPath}/userOrder.xhtml">myOrders</a></li>
+			</ul>
+			<h:commandButton action="#{authenticationBean.logout}" class="btn btn-primary btn-block" value="Logout" />
+		</h:form>
+	</h:form>
+	<!-- Sidebar finish -->
+
+
+	<!-- Content -->
+	<h:form id="adminContent">
+		<p:growl id="msgs" showDetail="true" />
+		<h3>Welcome #{authenticationBean.activeUser.name}</h3>
+	
+		<div class="container">
+		
+			<div class="row">
+
+				<div
+					class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad">
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title">#{authenticationBean.activeUser.name}</h3>
+						</div>
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-md-3" align="center" >
+									<img id="userImage" alt="User pic" src="#{authenticationBean.activeUser.image}" class="img-circle img-responsive" style="max-width: 75px"/>
+								</div>
+								<div class="col-md-7 col-md-offset-2" >
+										<h:inputText id="inputImage" value="#{authenticationBean.activeUser.image}" a:size="25">
+											<f:ajax event="change" listener="#{adminAccounts.test()}" render="@form"></f:ajax>
+										</h:inputText>
+										<input type="file" id="pages" accept="image/*" />
+									<button type="button" onclick="upload(function(link) { document.getElementById('adminContent:inputImage').value=link; $('#userImage').attr('src',link); })" class="btn btn-default">Upload</button>
+								</div>
+								<div class="col-xs-12"></div>
+								<div class=" col-md-10 col-md-offset-1">
+									<table class="table table-user-information">
+										<tbody>
+											
+											<tr>
+											<td>Username</td>
+											<td><p:inplace ><h:inputText value="#{authenticationBean.activeUser.name}" /></p:inplace></td>
+											</tr>
+											
+											<tr>
+											<td>Password</td>
+											<td><p:inplace ><h:inputText value="#{authenticationBean.activeUser.password}" /></p:inplace></td>
+											</tr>
+											
+											<tr>
+											<td>Email</td>
+											<td><p:inplace ><h:inputText value="#{authenticationBean.activeUser.email}" /></p:inplace></td>
+											</tr>
+											
+											<tr>
+											<td>Phone</td>
+											<td><p:inplace ><h:inputText value="#{authenticationBean.activeUser.phone}" /></p:inplace></td>
+											</tr>
+											
+											<tr>
+											<td>Address</td>
+											<td><p:inplace ><h:inputText value="#{authenticationBean.activeUser.address}" /></p:inplace></td>
+											</tr>
+											
+											<tr>
+											<td>City</td>
+											<td><p:inplace ><h:inputText value="#{authenticationBean.activeUser.city}" /></p:inplace></td>
+											</tr>
+											
+											<tr>
+											<td>Postcode</td>
+											<td><p:inplace ><h:inputText value="#{authenticationBean.activeUser.postcode}" /></p:inplace></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+
+							</div>
+						</div>
+
+						<div class="panel-footer">
+							<h:commandButton action="#{adminAccounts.update(authenticationBean.activeUser)}" value="Save" />
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</h:form>
+	<!-- Content finish -->
+
+
+	<!-- Footer -->
+	<div id="footerPart">
+		<ui:include src="/footer.xhtml" />
+	</div>
+	<!-- Footer finish -->
+</h:body>
+</html>

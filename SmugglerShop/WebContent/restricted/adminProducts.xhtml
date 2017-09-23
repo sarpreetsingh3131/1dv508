@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+        xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+<h:head>
+	<title>SmugglerShop</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<!-- css files -->
+	<link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+	<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/journal/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" /> 
+	
+	<!-- script files -->
+	<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="#{request.contextPath}/resources/js/footerFix.js"></script>
+	
+</h:head>
+
+<f:metadata>
+	<f:viewAction action="#{adminPages.init()}"/>
+</f:metadata>
+
+<body>
+
+	<!-- Header -->
+	<div id="header">
+	<ui:include src="../header.xhtml" />
+	</div>
+	<!-- Header end -->
+		
+	<!-- Sidebar -->	
+	<h:form id="sidebar">
+		<ul id="sidebarlist">
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminProducts.xhtml">Products</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminOrders.xhtml">Orders</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminAccounts.xhtml">Accounts</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminCategories.xhtml">Categories</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="../userAccount.xhtml">myAccount</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="../userOrder.xhtml">myOrders</a></li>
+			</ul>
+			<h:commandButton action="#{authenticationBean.logout}" class="btn btn-primary btn-block" value="Logout" />
+		</h:form>
+	<!-- Sidebar finish -->	
+
+
+<!-- Start Content -->
+<style>.bootstrap-iso .formden_header h2, .bootstrap-iso .formden_header p, .bootstrap-iso form{font-family: Arial, Helvetica, sans-serif; color: black}.bootstrap-iso form button, .bootstrap-iso form button:hover{color: white !important;} .asteriskField{color: red;}</style>
+
+<h:form id="adminContent">
+<p:growl id="msgs" showDetail="true" />
+<p:growl id="msg" showDetail="true" escape="false" />
+
+<!-- HTML Form (wrapped in a .bootstrap-iso div) -->
+<div class="bootstrap-iso">
+ <div class="container-fluid">
+ 
+ <!-- SearchBar -->
+		<div class="container-fluid" id="adminsearchBar">
+
+			<div class="col-xs-6"></div>
+			<div class="col-xs-3">
+				<div class="form-inline">
+					<p:autoComplete id="acSimple" value="#{adminPages.searchProduct}" completeMethod="#{mainpage.instantSearch}" size="30" a:placeholder="Search Product by Name"></p:autoComplete>	
+				<h:commandButton action="#{adminPages.searchProduct()}" class="btn btn-success" value="Go!" />
+
+				</div>
+				
+			</div>
+			<div class="col-xs-2">
+				<h:commandButton action="#{adminPages.init()}" value="Show all Products" />
+			</div>	
+		</div>
+	<!-- End SearchBar -->
+ 
+ <!-- Start input fields -->
+ <div class="col-xs-4" id="adminproductsforms">
+  <div class="row">
+     
+     
+     <div class="form-group ">
+      <label class="control-label " for="name">Name</label>
+      <h:inputText class="form-control" id="name" name="name" placeholder="Example-name" type="text" value="#{adminPages.prod.name}">
+           <f:ajax event="change" execute="name"></f:ajax>
+      </h:inputText>
+     </div>
+     
+     <div class="form-group ">
+     <h:graphicImage id="imageDisplay" value="#{adminPages.prod.image}" width="400em" alt="Image preview"/>
+     <br />
+     							 <div id="imageBox" class="col-md-3" align="center" >
+									<img id="userImage" alt="User pic" src="#{adminPages.prod.image}" class="img-circle img-responsive" style="max-width: 75px"/>
+								</div>
+								<div class="col-md-7 col-md-offset-2" >
+										<h:inputText id="inputProductImage" value="#{adminPages.prod.image}" a:size="25">
+											<f:ajax event="change" execute="userImage" listener="#{adminAccounts.test()}" render="imageDisplay"></f:ajax>
+										</h:inputText>
+										<input type="file" id="pages" accept="image/*" />
+									<button type="button" onclick="upload(function(link) { document.getElementById('adminContent:inputProductImage').value=link; $('#userImage').attr('src',link); })" class="btn btn-default">Upload</button>
+								</div>
+     </div>
+     
+     <div class="form-group ">
+      <label class="control-label " for="category">Category</label>
+      	<h:selectOneMenu class="select form-control" id="category" name="category" value="#{adminPages.prod.category}">
+      	    <f:ajax event="click" execute="category"></f:ajax>
+			<f:selectItems value="#{adminPages.categories}"></f:selectItems>
+		</h:selectOneMenu>
+     </div>
+     
+     <div class="form-group ">
+      <label class="control-label " for="price">Price</label>
+      <h:inputText class="form-control" id="price" name="price" placeholder="1337" type="text" value="#{adminPages.prod.price}">
+           <f:ajax event="change" execute="price"></f:ajax>
+      </h:inputText>
+     </div>
+     
+     <div class="form-group ">
+      <label class="control-label " for="quantity">Quantity</label>
+      <h:inputText class="form-control" id="quantity" name="quantity" placeholder="20" type="text" value="#{adminPages.prod.quantity}">
+           <f:ajax event="change" execute="name"></f:ajax>
+      </h:inputText>
+     </div>
+     
+     <div class="form-group ">
+      <label class="control-label " for="description">Description</label>
+      <h:inputTextarea class="form-control" cols="40" id="description" name="description" rows="10" value="#{adminPages.prod.description}">
+      	 <f:ajax event="change" execute="description"></f:ajax>
+      </h:inputTextarea>
+     </div>
+     
+     <div class="form-group">
+      <div>
+       <h:commandButton class="btn btn-primary " name="submit" type="submit" value="New Product">
+       		<f:ajax event="click" listener="#{adminPages.adminAddProduct()}" execute="inputProductImage" render="theHead @form"></f:ajax>
+       </h:commandButton>
+       <h:commandButton class="btn btn-primary " name="update" type="submit" value="Save">
+             <f:ajax event="click" listener="#{adminPages.adminSaveProduct()}" execute="inputProductImage" render="theHead @form"></f:ajax>
+       </h:commandButton>
+       <h:commandButton class="btn btn-primary " name="clearFields" type="submit" value="Clear">
+       		<f:ajax event="click" listener="#{adminPages.adminClearInputs()}" render="theHead @form"></f:ajax>
+       </h:commandButton>
+
+      </div>
+     </div>
+   </div>
+  </div>
+  <!-- End input fields -->
+  
+  <div class="col-xs-2"></div>
+  
+  <!-- Start product list -->
+            <div class="col-xs-6" id="adminProductsList"> 
+            <p:outputLabel  value="Products" /> 
+        	<p:dataTable id="eventsDT" value="#{adminPages.products}" var="p" selectionMode="single" selection="#{adminPages.prod}"  style="width:100%" rowKey="#{p.id}">
+            									<p:ajax event="rowSelect" listener="#{adminPages.onRowSelect}" update="@form" />
+       											<p:ajax event="rowUnselect" listener="#{adminPages.onRowUnselect}" update=":adminContent:msgs" /> 
+       											<p:ajax event="sort" skipChildren="false" />
+       											          
+       			 									<p:column headerText="Image" style="width:4%">
+       			 										<h:graphicImage value="#{p.image}" width="100" height="50" class="img-thumbnail" />
+       			 									</p:column>
+  
+       			 									<p:column headerText="Name" style="width:4%" sortBy="#{p.name}">
+       			 										<h:outputText value="#{p.name}" />
+       			 									</p:column>
+       			 									
+       			 									<p:column headerText="Price" style="width:4%" sortBy="#{p.price}">
+       			 										<h:outputText value="#{p.price}" />
+       			 									</p:column>
+       			 									       			 						
+       			 									<p:column headerText="Quantity" style="width:4%" sortBy="#{p.quantity}">
+       			 										<h:outputText id="inputQuantity" value="#{p.quantity}" a:size="2" />
+       			 									</p:column>
+       			 									
+       		</p:dataTable>
+     		<h:commandButton class="btn btn-primary " name="delete" type="submit" value="Delete selected">
+       			<f:ajax event="click" listener="#{adminPages.adminDeleteProduct()}" render="theHead @form"></f:ajax>
+     		</h:commandButton>
+     		
+       		<h:commandButton class="btn btn-primary " name="delete" type="submit" value="Delete all">
+       			<f:ajax event="click" listener="#{adminPages.adminDeleteProducts()}" render="theHead @form"></f:ajax>
+     		</h:commandButton>
+     		
+       		</div>
+             
+    <!-- Start product list -->
+  
+ </div>
+</div>
+</h:form>
+<!-- End content -->
+	
+</body>
+</html>

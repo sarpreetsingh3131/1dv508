@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+	<title>user Register</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<!-- css files -->
+	<link rel="stylesheet" href="resources/css/style.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+	<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/journal/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" /> 
+	
+	<!-- script files -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="resources/js/footerFix.js"></script>
+</h:head>
+	<f:metadata>
+	</f:metadata>
+<body>
+	<!-- Header -->
+	<div id="header">
+		<ui:include src="/header.xhtml" />
+	</div>
+	<!-- Header finish -->
+
+	<!-- Content -->
+	<h:form id="content">
+		<p:growl id="growl" showDetail="true" sticky="true" /> 
+	
+	<div class="container" style="margin-top: 20px">
+      <div class="row">
+         <div class="col-lg-6">
+                <div class="well well-sm"><strong><span class="glyphicon glyphicon-asterisk"></span>Required Field</strong></div>
+                
+                <div class="form-group">
+                    <label style="color: Black" for="name">Name</label>
+                    <div class="input-group">
+                        <h:inputText type="text" id="name" class="form-control" a:placeholder="John Smith"  value="#{adminAccounts.admin.name}" required="true" />
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                  <label style="color: Black" for="email">Email</label>
+                    <div class="input-group">
+                       <h:inputText type="text" id="email" class="form-control" a:placeholder="example@gmail.com" value="#{adminAccounts.admin.email}" required="true" />
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label style="color: Black" for="password">Password</label>
+                    <div class="input-group">
+                       <h:inputSecret type="text" id="password" class="form-control" a:placeholder="Password" value="#{adminAccounts.admin.password}" required="true" />
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                    </div>
+                </div>
+             
+               <div class="form-group">
+                   <label style="color: Black" for="phone">Phone</label>
+                    <div class="input-group">
+                        <h:inputText type="text" id="phone" class="form-control" a:placeholder="0735781231" value="#{adminAccounts.admin.phone}" required="false" />
+                        <span class="input-group-addon"></span>
+                    </div>
+                </div>
+                
+                  <div class="form-group">
+                    <label style="color: Black" for="address">Address</label>
+                    <div class="input-group">
+                        <h:inputText type="text" id="address" class="form-control" a:placeholder="Stallvagen 30"  value="#{adminAccounts.admin.address}" required="true" />
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                    </div>
+                </div>
+                
+                  <div class="form-group">
+                    <label style="color: Black" for="city">City</label>
+                    <div class="input-group">
+                      <h:inputText type="text" id="city" class="form-control" a:placeholder="Växjö"  value="#{adminAccounts.admin.city}" required="true" />
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                   <label style="color: Black" for="postcode">Postcode</label>
+                    <div class="input-group">
+                        <h:inputText type="text" id="postcode" class="form-control" a:placeholder="35421"  value="#{adminAccounts.admin.postcode}" required="true" />
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                    </div>
+                </div>
+                <h:commandButton value="Register me !" class="btn btn-info pull-center" action="#{adminAccounts.addUser()}" />
+            </div>
+            
+            <div class="col-lg-2"></div>
+				<img src="resources/img/CertificateLogo.jpg" alt=" " height="680" width="550"/>
+           </div>
+    
+    </div>
+			
+   	</h:form>
+	</body>
+	</html>

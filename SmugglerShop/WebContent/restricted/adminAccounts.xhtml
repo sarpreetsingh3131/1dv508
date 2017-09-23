@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+<h:head>
+	<title>Admin page</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<!-- css files -->
+	<link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+	<link
+		href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/journal/bootstrap.min.css"
+		rel="stylesheet" />
+	<link rel="stylesheet"
+		href="https://formden.com/static/cdn/bootstrap-iso.css" />
+
+	<!-- script files -->
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="#{request.contextPath}/resources/js/footerFix.js"></script>
+</h:head>
+<f:metadata>
+	<f:viewAction action="#{adminAccounts.init()}" />
+</f:metadata>
+
+<body>
+
+	<!-- Header -->
+	<div id="header">
+		<ui:include src="../header.xhtml" />
+	</div>
+	<!-- Header finish -->
+
+	<!-- Sidebar -->
+	<h:form id="sidebar">
+		<ul id="sidebarlist">
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminProducts.xhtml">Products</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminOrders.xhtml">Orders</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminAccounts.xhtml">Accounts</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="adminCategories.xhtml">Categories</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="../userAccount.xhtml">myAccount</a></li>
+			<li class="active" id="sidebarstyle"><a id="sidebarlink" href="../userOrder.xhtml">myOrders</a></li>
+		</ul>
+		<h:commandButton action="#{authenticationBean.logout}" class="btn btn-primary btn-block" value="Logout" />
+	</h:form>
+	<!-- Sidebar finish -->
+
+	<!-- Content -->
+	<h:form id="adminContent">
+		<p:growl id="growl" showDetail="true" sticky="true" />
+	
+	  <p:panel id="toggleable" header="New User" style="margin-top:10px" toggleable="true" collapsed="true">
+      	 <h:panelGrid columns="10" id="grid" cellpadding="5">
+            <p:outputLabel for="username" value="Username" />
+            <h:inputText id="username" value="#{adminAccounts.admin.name}" />
+            
+            <p:outputLabel for="email" value="Email" />
+            <h:inputText id="email" value="#{adminAccounts.admin.email}"/>
+           
+           <p:outputLabel for="password" value="Password" />
+        	<h:inputSecret id="password" value="#{adminAccounts.admin.password}" />
+        	
+        	<p:outputLabel for="address" value="Address" />
+            <h:inputText id="address" value="#{adminAccounts.admin.address}" />
+            <p:outputLabel for="postcode" value="Postcode" />
+            <h:inputText id="postcode" value="#{adminAccounts.admin.postcode}" />
+            <p:outputLabel for="city" value="City" />
+            <h:inputText id="city" value="#{adminAccounts.admin.city}" />
+        
+         <p:selectOneButton value="#{adminAccounts.admin.admin}">
+            <f:selectItem itemLabel="User" itemValue="false" />
+            <f:selectItem itemLabel="Admin" itemValue="true" />
+        </p:selectOneButton>
+   	<h:commandButton value="Save" icon="ui-icon-check" action="#{adminAccounts.addUser()}" />
+  </h:panelGrid>
+    </p:panel>
+		
+<div class="container-fluid">
+	<div class="col-sm-5" id="adminPanelContainer">
+	<h3 style="text-align: center;">List of Administrator</h3>
+	<hr></hr>
+	
+	<p:toolbar>
+		<f:facet name="left">
+			 <h:commandButton action="#{adminAccounts.sortByName(true)}" value="SortByName"></h:commandButton>
+		</f:facet>
+		<f:facet name="left">
+					<p:autoComplete id="acSimple" value="#{adminAccounts.adminSearch}" completeMethod="#{adminAccounts.instantSearchAdmin}" size="30" a:placeholder="Search Admins"></p:autoComplete>	
+					<h:commandButton action="#{adminAccounts.searchAccount(true)}" class="btn btn-success" value="Go!" />
+		</f:facet>
+		<f:facet name="right">
+			<h:commandButton action="#{adminAccounts.showAllAdmins}" value="Show all" />
+		</f:facet>
+	</p:toolbar>
+		<br></br>
+		<ul style="list-style: none">
+		<ui:repeat var="admin" value="#{adminAccounts.allAdmins}">
+
+		<li><div class="container" id="adminPanel">
+			<div class="row">
+				<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title">#{admin.name}<button class="showDetail btn btn-xs btn-defualt" type="button"><i class="fa fa-minus"></i></button> </h3>
+						</div>
+						<div class="panel-container" style="display:none">
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-md-3 col-lg-3 " align="center">
+									<h:graphicImage value="#{admin.image}" class="img-circle img-responsive" rendered="#{!admin.image.equals('')}"/>
+									<h:graphicImage value="http://babyinfoforyou.com/wp-content/uploads/2014/10/avatar-300x300.png" class="img-circle img-responsive" rendered="#{admin.image.equals('')}" />
+								</div>
+
+								<div class=" col-md-9 col-lg-9 ">
+									<table class="table table-user-information">
+										<tbody>
+											
+											<tr>
+											<td>Username</td>
+											<td><p:inplace ><h:inputText value="#{admin.name}" /></p:inplace></td>
+											</tr>
+											
+											<tr>
+											<td>Password</td>
+											<td><p:inplace ><h:inputText value="#{admin.password}" /></p:inplace></td>
+											</tr>
+											
+											<tr>
+											<td>Email</td>
+											<td><p:inplace ><h:inputText value="#{admin.email}" /></p:inplace></td>
+											</tr>
+											
+											<tr>
+											<td>Phone</td>
+											<td><p:inplace ><h:inputText value="#{admin.phone}" /></p:inplace></td>
+											</tr>
+											
+											<tr>
+											<td>Address</td>
+											<td><p:inplace ><h:inputText value="#{admin.address}" /></p:inplace></td>
+											</tr>
+											
+											<tr>
+											<td>City</td>
+											<td><p:inplace ><h:inputText value="#{admin.city}" /></p:inplace></td>
+											</tr>
+											
+											<tr>
+											<td>Postcode</td>
+											<td><p:inplace ><h:inputText value="#{admin.postcode}" /></p:inplace></td>
+											</tr>
+
+										</tbody>
+									</table>
+								</div>
+
+							</div>
+						</div>
+
+						<div class="panel-footer">
+							<h:commandButton action="#{adminAccounts.update(admin)}" value="Save" />
+							<h:commandButton action="#{adminAccounts.removeUser(admin)}" value="Remove" />
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			</li>
+		</ui:repeat>
+		</ul>
+		</div>
+
+<div class="col-sm-2"></div>
+<div class="col-sm-5" id="userPanelContainer">
+<h3 style="text-align: center;">List of Users</h3>
+<hr></hr>
+		<p:toolbar>
+		<f:facet name="left">
+			 <h:commandButton action="#{adminAccounts.sortByName(false)}" value="SortByName"></h:commandButton>
+		</f:facet>
+		<f:facet name="left">
+			<p:autoComplete id="acMaxResults" maxResults="5" value="#{adminAccounts.userSearch}" completeMethod="#{adminAccounts.instantSearchUser}" size="30" a:placeholder="Search Users"></p:autoComplete>	
+			<h:commandButton action="#{adminAccounts.searchAccount(false)}" class="btn btn-success" value="Go!" />
+		</f:facet>
+		<f:facet name="right">
+			<h:commandButton action="#{adminAccounts.showAllUsers}" value="Show all" />
+		</f:facet>
+		</p:toolbar>
+		<br></br>
+		<ul style="list-style: none;">
+		<ui:repeat var="user" value="#{adminAccounts.allUsers}">
+		<li><div class="container" id="adminPanel">
+			<div class="row">
+				<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title">#{user.name}<button class="showDetail btn btn-xs btn-defualt" type="button"><i class="fa fa-minus"></i></button> </h3>
+							
+						</div>
+						<div class="panel-container" style="display:none">
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-md-3 col-lg-3 " align="center">
+									<h:graphicImage value="#{user.image}" class="img-circle img-responsive" rendered="#{!user.image.equals('')}"/>
+									<h:graphicImage value="http://babyinfoforyou.com/wp-content/uploads/2014/10/avatar-300x300.png" class="img-circle img-responsive" rendered="#{user.image.equals('')}" />
+								</div>
+
+								<div class=" col-md-9 col-lg-9 ">
+									<table class="table table-user-information">
+										<tbody>
+												
+												<tr>
+												<td>Username</td>
+												<td><p:inplace ><h:inputText id="editName" value="#{user.name}"/></p:inplace></td>
+												</tr>
+											
+												<tr>
+												<td>Password</td>
+												<td><p:inplace ><h:inputText value="#{user.password}" /></p:inplace></td>
+												</tr>
+											
+												<tr>
+												<td>Email</td>
+												<td><p:inplace ><h:inputText value="#{user.email}" /></p:inplace></td>
+												</tr>
+												
+												<tr>
+												<td>Phone</td>
+												<td><p:inplace ><h:inputText value="#{user.phone}" /></p:inplace></td>
+												</tr>
+											
+												<tr>
+												<td>Address</td>
+												<td><p:inplace ><h:inputText value="#{user.address}" /></p:inplace></td>
+												</tr>
+											
+												<tr>
+												<td>City</td>
+												<td><p:inplace ><h:inputText value="#{user.city}" /></p:inplace></td>
+												</tr>
+											
+												<tr>
+												<td>Postcode</td>
+												<td><p:inplace ><h:inputText value="#{user.postcode}" /></p:inplace></td>
+												</tr>
+
+										</tbody>
+									</table>
+								</div>
+
+							</div>
+						</div>
+
+						<div class="panel-footer">
+							<h:commandButton action="#{adminAccounts.update(user)}" value="Save" />
+							<h:commandButton action="#{adminAccounts.removeUser(user)}" value="Remove" />
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			</li>
+		</ui:repeat>
+		</ul>
+		</div>
+
+		</div>
+	</h:form>
+	<!-- Content finish -->
+
+	
+
+</body>
+</html>
